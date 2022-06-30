@@ -10,20 +10,14 @@ from .serializer import ProductSerializer, CollectionSerializer
 from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
 
-class ProductList(generics.ListCreateAPIView):
+
+
+class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def get_serializer_context(self):
-        return {'request':self.request}
-
-class CollectionList(generics.ListCreateAPIView):
-    serializer_class = CollectionSerializer
-    queryset = Collection.objects.annotate(products_count=Count('product')).all()
-
-class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+        return {'request': self.request}
 
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -33,7 +27,9 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
+
+
+class CollectionViewSet(ModelViewSet):
     serializer_class = CollectionSerializer
     queryset = Collection.objects.annotate(products_count=Count('product')).all()
 
@@ -44,3 +40,7 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
                             status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
