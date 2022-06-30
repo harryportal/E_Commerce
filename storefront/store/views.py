@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import Product, Customer, Address, Collection, Cart, CartItem
+from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem
 from rest_framework import generics
 from .serializer import ProductSerializer, CollectionSerializer
 from django.db.models import Count
@@ -19,19 +19,16 @@ class ProductViewSet(ModelViewSet):
     def get_serializer_context(self):
         return {'request': self.request}
 
-    def delete(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        if product.order_items.count() > 0:
-            return Response({'Error':'Product with associated order items cannot be '
-                                     'deleted '}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+    def destroy(self, request, *args, **kwargs):  # a delete method implemented
+        if OrderItem.objects.filter(product_id=kwargs['pk']):
+            return Response({'Error': 'Product with associated order items cannot be '
+                                      'deleted '}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.delete()
 
 
 class CollectionViewSet(ModelViewSet):
     serializer_class = CollectionSerializer
-    queryset = Collection.objects.annotate(products_count=Count('product')).all()
+    queryset = Collection.objects.annotate(products_count=Count('products')).all()
 
     def delete(self, request, pk):
         collection = get_object_or_404(Collection, pk=pk)
