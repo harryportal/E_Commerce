@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem
+from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem, Review
 from rest_framework import generics
-from .serializer import ProductSerializer, CollectionSerializer
+from .serializer import ProductSerializer, CollectionSerializer, ReviewSerializer
 from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
 
@@ -15,6 +15,10 @@ from rest_framework.viewsets import ModelViewSet
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -38,6 +42,14 @@ class CollectionViewSet(ModelViewSet):
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+# handles every query pertaining to review
+class ReviewViewSet(ModelViewSet):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def get_serializer_context(self):
+        return {'product_id':self.kwargs['product_pk']}    # the self.kwargs contain the url query parameters
 
 
 
