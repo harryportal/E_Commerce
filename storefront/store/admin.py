@@ -46,3 +46,13 @@ class CustomerAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['placed_at','payment_status','customer']
     list_per_page = 10
+
+
+@admin.register(models.Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['id','created_at']
+
+@admin.register(models.CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['product','quantity', 'id']
+    list_select_related = ['cart']

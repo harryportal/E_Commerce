@@ -6,6 +6,7 @@ app_name = 'store'
 router = routers.DefaultRouter()
 router.register('products', views.ProductViewSet, basename='products')
 router.register('collections', views.CollectionViewSet)
+router.register('carts', views.CartViewSet)
 
 
 # a base router to be nested with the reviews router
@@ -13,8 +14,11 @@ router.register('collections', views.CollectionViewSet)
 product_router = routers.NestedSimpleRouter(router, 'products', lookup='product')
 product_router.register('reviews', views.ReviewViewSet, basename='products-review')
 
+cart_router = routers.NestedDefaultRouter(router, 'carts', lookup='cart')
+cart_router.register('items', views.CartItemViewSet, basename='cart-items')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('',include(product_router.urls))
+    path('',include(product_router.urls)),
+    path('', include(cart_router.urls))
 ]
