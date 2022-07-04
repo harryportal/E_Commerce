@@ -40,7 +40,11 @@ class CustomerAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_display = ['first_name','last_name','membership']
     list_editable = ['membership']
+    list_select_related = ['user__first_name','user__last_name']
     search_fields = ['first_name','last_name']
+    ordering = ['user__first_name','user__last_name']
+
+
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
