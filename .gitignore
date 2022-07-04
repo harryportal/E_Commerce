@@ -2,3 +2,4 @@ storefront/store/__pycache__
 *.pyc
 .idea/ main.py
 .idea/
+main.py
