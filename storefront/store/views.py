@@ -2,11 +2,12 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem, Review
 from .serializer import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer
-from .serializer import AddCartItemSerializer, UpdateCartItemSerializer
+from .serializer import AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer
 from django.db.models import Count
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter
@@ -79,3 +80,21 @@ class CartItemViewSet(ModelViewSet):
         return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']).\
                 select_related('product').all()
 
+class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    # the delete view set is not supported for this class since we can actually delete a customer by deleting the user
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+
+    # to get the customer profile -- customer/me endpoint
+    @action(detail=False, methods=['GET','PUT'])
+    def me(self, request):
+        (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
+        # the tuple unpacking is used since the get_or_create manager method returns a tuple of (user, created(boolean)
+        if request.method == 'GET':
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        if request.method == 'PUT':
+            serializer = CustomerSerializer(customer, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)

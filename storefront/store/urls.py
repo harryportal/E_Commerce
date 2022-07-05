@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 router.register('products', views.ProductViewSet, basename='products')
 router.register('collections', views.CollectionViewSet)
 router.register('carts', views.CartViewSet)
+router.register('customers', views.CustomerViewSet)
 
 
 # a base router to be nested with the reviews router
