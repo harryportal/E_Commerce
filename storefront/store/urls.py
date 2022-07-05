@@ -8,7 +8,7 @@ router.register('products', views.ProductViewSet, basename='products')
 router.register('collections', views.CollectionViewSet)
 router.register('carts', views.CartViewSet)
 router.register('customers', views.CustomerViewSet)
-
+router.register('orders', views.OrderViewSet, basename='orders')
 
 # a base router to be nested with the reviews router
 # the look up field is used to look up the primary key in a product_pk format
