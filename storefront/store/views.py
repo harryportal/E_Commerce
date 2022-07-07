@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
-from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem, Review, Order
+from .models import Product, Customer, Address, Collection, Cart, CartItem, OrderItem, Review, Order, ProductImage
 from .serializer import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer
 from .serializer import AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer, OrderSerializer,\
-    OrderCreateSerializer, UpdateOrderSerializer
+    OrderCreateSerializer, UpdateOrderSerializer, ProductImageSerializer
 from django.db.models import Count
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -16,10 +16,10 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .pagination import DefaultPagination
 from .permissions import IsAdminorReadOnly
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-
+from django.core.mail import send_mail, mail_admins
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related('images').all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
@@ -135,6 +135,20 @@ class OrderViewSet(ModelViewSet):
         if user.is_staff:
             return Order.objects.all()
         # return the order for the authenticated customer
-        (customer_id, created) = Customer.objects.only('id').get(user_id=user.id)
+        customer_id= Customer.objects.only('id').get(user_id=user.id)
         order = Order.objects.filter(customer_id=customer_id)
         return order
+
+class ProductImageVeiwSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
+
+    def get_serializer_context(self):
+        return {'product_id':self.kwargs['product_pk']}
+
+
+
+
+

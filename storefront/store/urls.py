@@ -14,6 +14,7 @@ router.register('orders', views.OrderViewSet, basename='orders')
 # the look up field is used to look up the primary key in a product_pk format
 product_router = routers.NestedSimpleRouter(router, 'products', lookup='product')
 product_router.register('reviews', views.ReviewViewSet, basename='products-review')
+product_router.register('images', views.ProductImageVeiwSet, basename='product-image')
 
 cart_router = routers.NestedDefaultRouter(router, 'carts', lookup='cart')
 cart_router.register('items', views.CartItemViewSet, basename='cart-items')
