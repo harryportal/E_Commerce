@@ -155,20 +155,13 @@ DJOSER = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST =''
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 2525
-DEFAULT_FROM_EMAIL = 'from@harrycommerce.com'
-
 # adding a admin mail for the fake smt server
 ADMINS = [
     ('harry', 'harry@gmail.com')
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/1'
-
+"""
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -177,4 +170,4 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-}
+}"""

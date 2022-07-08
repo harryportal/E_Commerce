@@ -1,16 +1,16 @@
 from .common import *
 import os
+import dj_database_url
+
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['shopit-api.herokuapp.com']
+REDIS = os.environ.get('REDIS_URL')
+CELERY_BROKER_URL = REDIS
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'E_Commerce2',
-        'USER': 'postgres',
-        'PASSWORD': '112233',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config()
 }
+
