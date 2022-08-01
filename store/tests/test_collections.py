@@ -56,15 +56,17 @@ class TestRetrieveCollection:
 @pytest.mark.django_db
 class TestOrdering:
     def test_paystack_webhook(self, api_client):
-        order = baker.make(Order)
+        # order = baker.make(Order)
+        # order_item = baker.make(OrderItem)
+        # TODO: duplicate user_id key??
         data = {
             'event': 'charge.success',
             'data': {
                 'id': 1923036003,
                 'domain': 'test',
                 'status': 'success',
-                'reference': order.paystack_order_reference,
-                'amount': sum([item.unit_price for item in order.items]),
+                'reference': '92fff1c304691a67fc5c3ed3a6fcf128',
+                'amount': 4595984,
                 'message': None,
                 'gateway_response': 'Successful',
                 'paid_at': '2022-07-02T01:03:28.000Z',
@@ -116,5 +118,5 @@ class TestOrdering:
                 }
             }
         }
-        response = api_client.post(f'/orders/transaction-webhook/', data=data)
+        response = api_client.post(f'/store/payments/transaction-webhook/', data=data, format='json')
         assert response.status_code == 200
