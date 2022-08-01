@@ -80,12 +80,13 @@ WSGI_APPLICATION = 'storefront.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+# TODO: set your environment variables
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'E_Commerce2',
+        'NAME': os.environ.get('STOREFRONT_DATABASE_NAME'),
         'USER': 'postgres',
-        'PASSWORD': '112233',
+        'PASSWORD': os.environ.get('POSTGRES_DATABASE_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

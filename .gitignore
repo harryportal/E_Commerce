@@ -3,4 +3,4 @@
 .idea/
 main.py
 /static/
-
+.venv/
