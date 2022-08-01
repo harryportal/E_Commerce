@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 import pytest
 from model_bakery import baker
-from store.models import Collection, Order
+from store.models import Collection, Order, Customer
 
 
 @pytest.fixture
@@ -53,5 +53,6 @@ class TestRetrieveCollection:
 @pytest.mark.django_db
 class TestOrdering:
     def test_paystack_webhook(self, api_client):
-        order = baker.make(Order)
-        print(order.id)
+        customer = Customer.objects.filter(user=1).first()
+        assert customer.id == 1
+        # print(order.id)
