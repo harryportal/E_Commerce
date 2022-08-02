@@ -4,6 +4,13 @@ from django.conf import settings
 from django.contrib import admin
 from .validator import validate_file_size
 
+import secrets
+
+
+# TODO: change location of random reference generator
+def generate_random_transaction_reference():
+    return secrets.token_hex(12)
+
 
 class Promotion(models.Model):
     description = models.CharField(max_length=255, null=True)
@@ -74,9 +81,6 @@ class Customer(models.Model):
         return f'{self.user.first_name} {self.user.last_name}'
 
 
-
-
-
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETE = 'C'
@@ -90,6 +94,10 @@ class Order(models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+
+    # change reference method as you please
+    paystack_order_reference = models.CharField(default=generate_random_transaction_reference, max_length=25)
+
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 

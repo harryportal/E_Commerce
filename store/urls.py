@@ -19,8 +19,12 @@ product_router.register('images', views.ProductImageVeiwSet, basename='product-i
 cart_router = routers.NestedDefaultRouter(router, 'carts', lookup='cart')
 cart_router.register('items', views.CartItemViewSet, basename='cart-items')
 
+# order_router = routers.NestedSimpleRouter(router, 'orders', lookup='order')
+# order_router.register('/transaction-webhook', views.OrderPaymentWebHook.as_view(), basename='order-transaction')
+
 urlpatterns = [
     path('', include(router.urls)),
-    path('',include(product_router.urls)),
-    path('', include(cart_router.urls))
+    path('', include(product_router.urls)),
+    path('', include(cart_router.urls)),
+    path('payments/transaction-webhook/', views.OrderPaymentWebHook.as_view(), name='order_transaction_webhook')
 ]
